@@ -1,17 +1,23 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import multer from 'multer';
 
 import greetRoute from '../greet/greet.route.js';
+import mediaRoute from '../media/media.route.js';
 
 const app = express();
 dotenv.config();
 app.use(express.json());
 app.use(cors());
+// Set up multer to use memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const PORT = process.env.PORT || 3000;
 
 app.use('/api',greetRoute);
+app.use("/api/media", upload.single('image'), mediaRoute);
 
 //Response Handler Middleware
 app.use((obj,req,res,next) => {
